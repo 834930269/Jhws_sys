@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.homework.mapper.TopicMapper" >
+  <resultMap id="BaseResultMap" type="com.homework.pojo.Topic" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="teacherID" property="teacherid" jdbcType="INTEGER" />
+    <result column="Grade" property="grade" jdbcType="INTEGER" />
+    <result column="answer" property="answer" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="TimeStamp" property="timestamp" jdbcType="TIMESTAMP" />
+    <result column="choices" property="choices" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.homework.pojo.TopicWithBLOBs" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="analysis" property="analysis" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, teacherID, Grade, answer, type, score, TimeStamp, choices
+  </sql>
+  <sql id="Blob_Column_List" >
+    content, analysis
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.homework.pojo.TopicExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.homework.pojo.TopicExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="getAllTopic"
+	        resultType="com.homework.pojo.TopicWithBLOBs"
+	        parameterType="com.homework.util.Page">
+	        SELECT
+	        e.id,
+	        e.teacherID,
+	        e.content,
+	        e.Grade,
+	        e.answer,
+	        e.type,
+	        e.analysis,
+	        e.score,
+	        e.TimeStamp,
+	        e.choices
+	        FROM
+	        topic e
+	        WHERE teacherID=#{tid}
+	        LIMIT #{startIndex},#{pageSize}
+	    </select>
+	    <select id="total" resultType="int">
+        	select count(*) from topic Where teacherID = #{reacherID,jdbcType=INTEGER}
+        </select>
+	    <select id="total_G" resultType="int">
+        	select count(*) from topic Where Grade = #{grade,jdbcType=INTEGER}
+        </select>
+  <select id="getAllTopicByGrade"
+	        resultType="com.homework.pojo.TopicWithBLOBs"
+	        parameterType="com.homework.util.Page">
+	        SELECT
+	        e.id,
+	        e.teacherID,
+	        e.content,
+	        e.Grade,
+	        e.answer,
+	        e.type,
+	        e.analysis,
+	        e.score,
+	        e.TimeStamp,
+	        e.choices
+	        FROM
+	        topic e
+	        WHERE grade=#{grade}
+	        LIMIT #{startIndex},#{pageSize}
+	    </select>
+  <select id="selectByGrade"  parameterType="java.lang.Integer">
+  select 
+   	content,choices
+ 	from topic
+ 	Where Grade = #{grede,jdbcType=INTEGER}
+  </select>
+  <select id="selectByTeacherId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  select *  from topic Where teacherID = #{teacherID,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from topic
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from topic
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.homework.pojo.TopicExample" >
+    delete from topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.homework.pojo.TopicWithBLOBs" >
+    insert into topic (ID, teacherID, Grade, 
+      answer, type, score, 
+      TimeStamp, choices, content, 
+      analysis)
+    values (#{id,jdbcType=INTEGER}, #{teacherid,jdbcType=INTEGER}, #{grade,jdbcType=INTEGER}, 
+      #{answer,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{score,jdbcType=INTEGER}, 
+      #{timestamp,jdbcType=TIMESTAMP}, #{choices,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}, 
+      #{analysis,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.homework.pojo.TopicWithBLOBs" >
+    insert into topic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="teacherid != null" >
+        teacherID,
+      </if>
+      <if test="grade != null" >
+        Grade,
+      </if>
+      <if test="answer != null" >
+        answer,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="timestamp != null" >
+        TimeStamp,
+      </if>
+      <if test="choices != null" >
+        choices,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="analysis != null" >
+        analysis,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="timestamp != null" >
+        #{timestamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="choices != null" >
+        #{choices,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="analysis != null" >
+        #{analysis,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.homework.pojo.TopicExample" resultType="java.lang.Integer" >
+    select count(*) from topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update topic
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.teacherid != null" >
+        teacherID = #{record.teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="record.grade != null" >
+        Grade = #{record.grade,jdbcType=INTEGER},
+      </if>
+      <if test="record.answer != null" >
+        answer = #{record.answer,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.score != null" >
+        score = #{record.score,jdbcType=INTEGER},
+      </if>
+      <if test="record.timestamp != null" >
+        TimeStamp = #{record.timestamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.choices != null" >
+        choices = #{record.choices,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.analysis != null" >
+        analysis = #{record.analysis,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update topic
+    set ID = #{record.id,jdbcType=INTEGER},
+      teacherID = #{record.teacherid,jdbcType=INTEGER},
+      Grade = #{record.grade,jdbcType=INTEGER},
+      answer = #{record.answer,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=INTEGER},
+      score = #{record.score,jdbcType=INTEGER},
+      TimeStamp = #{record.timestamp,jdbcType=TIMESTAMP},
+      choices = #{record.choices,jdbcType=VARCHAR},
+      content = #{record.content,jdbcType=LONGVARCHAR},
+      analysis = #{record.analysis,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update topic
+    set ID = #{record.id,jdbcType=INTEGER},
+      teacherID = #{record.teacherid,jdbcType=INTEGER},
+      Grade = #{record.grade,jdbcType=INTEGER},
+      answer = #{record.answer,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=INTEGER},
+      score = #{record.score,jdbcType=INTEGER},
+      TimeStamp = #{record.timestamp,jdbcType=TIMESTAMP},
+      choices = #{record.choices,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.homework.pojo.TopicWithBLOBs" >
+    update topic
+    <set >
+      <if test="teacherid != null" >
+        teacherID = #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        Grade = #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="timestamp != null" >
+        TimeStamp = #{timestamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="choices != null" >
+        choices = #{choices,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="analysis != null" >
+        analysis = #{analysis,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.homework.pojo.TopicWithBLOBs" >
+    update topic
+    set teacherID = #{teacherid,jdbcType=INTEGER},
+      Grade = #{grade,jdbcType=INTEGER},
+      answer = #{answer,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      TimeStamp = #{timestamp,jdbcType=TIMESTAMP},
+      choices = #{choices,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR},
+      analysis = #{analysis,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.homework.pojo.Topic" >
+    update topic
+    set teacherID = #{teacherid,jdbcType=INTEGER},
+      Grade = #{grade,jdbcType=INTEGER},
+      answer = #{answer,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      TimeStamp = #{timestamp,jdbcType=TIMESTAMP},
+      choices = #{choices,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

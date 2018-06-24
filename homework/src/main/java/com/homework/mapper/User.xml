@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+    <mapper namespace="com.homework.mapper.UserMapper">
+        <insert id="add" parameterType="User" >
+            insert into User ( Name,Grade,Gravater,Identified,UserName,Password,TimeStamp ) values (#{name},#{grade},#{gravater},#{identified},#{username},#{password},#{timestamp})   
+        </insert>
+         
+        <delete id="delete" parameterType="User" >
+            delete from User where ID= #{id}  
+        </delete>
+         
+        <select id="get" parameterType="_int" resultType="User">
+            select * from   User  where ID= #{id}   
+        </select>
+        
+        <select id="get_by_username" parameterType="String" resultType="User">
+        	select * from   User  where UserName= #{username}   
+        </select>
+ 
+        <update id="update" parameterType="User" >
+            update User set Name=#{name},Grade=#{grade},Gravater=#{gravater},Identified=#{identified},UserName=#{username},Password=#{password},TimeStamp=#{timestamp},token=#{token} where ID=#{id}   
+        </update>
+        
+        <select id="gettoken" parameterType="int" resultType="String">
+        	select token from User where ID=#{id}
+        </select>
+        
+	    <select id="getAllUser"
+	        resultType="com.homework.pojo.User"
+	        parameterType="com.homework.util.Page">
+	        SELECT
+	        e.id,
+	        e.name,
+	        e.grade,
+	        e.gravater,
+	        e.identified,
+	        e.username,
+	        e.password,
+	        e.timestamp,
+	        e.token
+	        FROM
+	        user e
+	        LIMIT #{startIndex},#{pageSize}
+	    </select>
+        <select id="total" resultType="int">
+        	select count(*) from User
+        </select>
+        
+    </mapper>
